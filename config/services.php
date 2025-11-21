@@ -39,6 +39,7 @@ return [
         'api_id' => env('VIP_RESELLER_API_ID'),
         'api_key' => env('VIP_RESELLER_API_KEY'),
         'sign' => env('VIP_RESELLER_SIGN'),
+        'base_url' => env('VIP_RESELLER_BASE_URL'),
     ],
 
 ];

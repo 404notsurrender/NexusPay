@@ -18,6 +18,7 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\PopularGameController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaymentCallbackController;
+use App\Http\Controllers\VipResellerController;
 
 // Auth routes
 Route::post('/auth/login', [MemberController::class, 'login']);
@@ -45,6 +46,10 @@ Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
 // Transaction routes
 Route::middleware('auth:sanctum')->post('/orders', [TransactionController::class, 'createOrder']);
 Route::post('/guest-checkout', [TransactionController::class, 'guestCheckout']);
+Route::get('/games', [VipResellerController::class, 'getGames']);
+Route::get('/order', [VipResellerController::class, 'order']);
+Route::get('/status/{trxid}', [VipResellerController::class, 'status']);
+Route::get('/auto-update', [VipResellerController::class, 'autoUpdate']);
 
 // Admin routes
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
