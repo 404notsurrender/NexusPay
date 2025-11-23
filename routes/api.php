@@ -22,8 +22,8 @@ use App\Http\Controllers\VipResellerController;
 
 // Auth routes
 Route::post('/auth/login', [MemberController::class, 'login']);
-Route::post('/auth/admin/login', [AuthController::class, 'adminLogin'])->middleware('ip.whitelist');
-Route::middleware('auth:sanctum')->post('/auth/logout', [AuthController::class, 'logout']);
+Route::post('/auth/admin/login', [AdminController::class, 'adminLogin'])->middleware('ip.whitelist');
+Route::middleware('auth:sanctum')->post('/auth/logout', [AdminController::class, 'logout']);
 
 // Member routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -46,51 +46,31 @@ Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
 // Transaction routes
 Route::middleware('auth:sanctum')->post('/orders', [TransactionController::class, 'createOrder']);
 Route::post('/guest-checkout', [TransactionController::class, 'guestCheckout']);
-Route::get('/games', [VipResellerController::class, 'getGames']);
-Route::get('/order', [VipResellerController::class, 'order']);
-Route::get('/status/{trxid}', [VipResellerController::class, 'status']);
-Route::get('/auto-update', [VipResellerController::class, 'autoUpdate']);
+
+// VVIP RESELLER ROUTES 
+Route::prefix('vip-reseller')->group(function () {
+    Route::get('/games', [VipResellerController::class, 'getGames']);
+    Route::get('/order', [VipResellerController::class, 'order']);
+    Route::get('/status/{trxid}', [VipResellerController::class, 'status']);
+    Route::get('/auto-update', [VipResellerController::class, 'autoUpdate']);
+});
 
 // Admin routes
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-    // Games
     Route::apiResource('/admin/games', GameController::class, ['as' => 'admin']);
-
-    // Categories
     Route::apiResource('/admin/categories', CategoryController::class, ['as' => 'admin']);
-
-    // Products
     Route::apiResource('/admin/products', ProductController::class, ['as' => 'admin']);
-
-    // Orders
     Route::apiResource('/admin/orders', OrderController::class, ['as' => 'admin']);
-
-    // Deposits
     Route::apiResource('/admin/deposits', DepositController::class, ['as' => 'admin']);
-
-    // Payment Methods
     Route::apiResource('/admin/payment-methods', PaymentMethodController::class, ['as' => 'admin']);
-
-    // Banners
     Route::apiResource('/admin/banners', BannerController::class, ['as' => 'admin']);
-
-    // Popups
     Route::apiResource('/admin/popups', PopupController::class, ['as' => 'admin']);
-
-    // Configs
     Route::apiResource('/admin/configs', ConfigController::class, ['as' => 'admin']);
-
-    // Popular Games
     Route::apiResource('/admin/popular-games', PopularGameController::class, ['as' => 'admin']);
-
-    // Users
     Route::apiResource('/admin/users', UserController::class, ['as' => 'admin']);
+
     Route::post('/admin/users/{user}/reset-password', [AdminController::class, 'resetUserPassword']);
-
-    // Bulk operations
     Route::post('/admin/bulk-activate-products', [AdminController::class, 'bulkActivateProducts']);
-
-    // Analytics
     Route::get('/admin/analytics', [AdminController::class, 'analytics']);
 });
 
