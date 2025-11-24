@@ -26,7 +26,7 @@ class TransactionController extends Controller
         ]);
 
         $product = Product::find($request->product_id);
-        $paymentMethod = PaymentMethod::find($request->payment_method_id);
+        $paymentMethod = \App\Models\PaymentMethod::find($request->payment_method_id);
 
         if (!$product->available) {
             return response()->json(['message' => 'Product not available'], 400);
@@ -34,8 +34,8 @@ class TransactionController extends Controller
 
         $totalPrice = ($product->custom_price ?? $product->price) * $request->quantity;
 
-        $order = Order::create([
-            'user_id' => auth()->id(),
+        $order = \App\Models\Order::create([
+            'user_id' => optional($request->user())->id,
             'product_id' => $request->product_id,
             'quantity' => $request->quantity,
             'total_price' => $totalPrice,
@@ -71,7 +71,7 @@ class TransactionController extends Controller
 
         $totalPrice = ($product->custom_price ?? $product->price) * $request->quantity;
 
-        $order = Order::create([
+        $order = \App\Models\Order::create([
             'product_id' => $request->product_id,
             'quantity' => $request->quantity,
             'total_price' => $totalPrice,
@@ -89,10 +89,14 @@ class TransactionController extends Controller
         ], 201);
     }
 
-    public function checkStatus(Request $request, Order $order)
+    public function checkStatus(Request $request, \App\Models\Order $order)
     {
         // Allow user to check their own orders or admin to check any
-        if ($order->user_id !== auth()->id() && (!auth()->check() || auth()->user()->role !== 'admin')) {
+        $currentUser = $request->user();
+        $currentUserId = $currentUser ? $currentUser->id : null;
+
+        // If the current user is neither the owner nor an admin, deny access
+        if ($order->user_id !== $currentUserId && (!$currentUser || $currentUser->role !== 'admin')) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 

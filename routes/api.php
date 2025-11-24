@@ -60,7 +60,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::apiResource('/admin/games', GameController::class, ['as' => 'admin']);
     Route::apiResource('/admin/categories', CategoryController::class, ['as' => 'admin']);
     Route::apiResource('/admin/products', ProductController::class, ['as' => 'admin']);
-    Route::apiResource('/admin/orders', OrderController::class, ['as' => 'admin']);
+    Route::apiResource('/admin/orders', TransactionController::class, ['as' => 'admin']);
     Route::apiResource('/admin/deposits', DepositController::class, ['as' => 'admin']);
     Route::apiResource('/admin/payment-methods', PaymentMethodController::class, ['as' => 'admin']);
     Route::apiResource('/admin/banners', BannerController::class, ['as' => 'admin']);
